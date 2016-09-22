@@ -46,9 +46,6 @@ Template.testing.onCreated(function(){
 Template.testing.helpers({
 	currentAsk : function(){
 		return Session.get("test").asks[i.get()];
-	},
-	isLast : function(){
-		return false; //isLast.get();
 	}
 });
 
@@ -57,18 +54,20 @@ Template.testing.events({
 		i.set(i.get() + 1); 
 	},
 	'click #answer' : function(e, t){
-		
-		var askNumber = null;
-		
+		console.log(i.get());
+		Meteor.call("addAnswer", idStat, { num : i.get(), value : Number($("input[name='isTrue']:checked")[0].value) });
+
 		if(Session.get("test").type.split("-")[0] == "line"){
-			askNumber = i.get() + 1;
+			if(i.get() + 1 == Session.get("test").asks.length){ 
+				Meteor.call("finishStat", idStat);
+			}
+			else{
+				i.set(i.get() + 1);
+			}
 		}
 		else{
 			askNumber = "Чему-то, что будет зависить от ответа на предыдущий вопрос";
 			//Проверяем на наличие свойства isLast;
 		}
-		
-		Meteor.call("addAnswer", idStat, { num : i.get(), value : Number($("input[name='isTrue']:checked")[0].value) });
-		
 	}
 });

@@ -19,5 +19,7 @@ Meteor.methods({
 	'addAnswer' : function(idStat, data){
 		Statistics.update(idStat, {$push : {answers : data}});
 	},
-	
+	'finishStat' : function(idStat){
+		Statistics.update(idStat, {$set : { finish : true }});
+	}
 });
