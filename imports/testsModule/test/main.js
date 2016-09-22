@@ -2,30 +2,19 @@ import { Tests } from '../../collections/tests.js';
 
 var status = new ReactiveVar("info");
 var i = new ReactiveVar(0);
-var isLast = new ReactiveVar(false);
-var idPass = ""; 
+var isLast = new ReactiveVar(false);//Модифицировать, пока что идей не очень много в 4:09...
+var idStat = "";
 
 Template.test.onCreated(function(){
 	status.set("info");
 	
 	Session.set("test", Tests.findOne(FlowRouter.getParam("_id")));
 	
-	/*Meteor.call("isAllFinish", FlowRouter.getParam("_id"), function(err, res){
-		
-		if(res.isNew){
-			//Проверить, если тест не линейный, то установить номер начала
-			i.set(0);
-		}
-		else{
-			i.set(res.askNumber);
-			if(i.get() + 1 == Session.get("test").asks.length){
-				isLast.set(true);
-			}
-		}
+	Meteor.call("checkStat", Session.get("test")._id, function(err, res){
+		idStat = res.id;
 
-		idPass = res.idPass;
-
-	});*/
+		/*Сделать модальное окно для проверки, если тест НЕ новый то предлогать продолжить прошлое прохождение*/
+	});
 	
 });
 
@@ -59,7 +48,7 @@ Template.testing.helpers({
 		return Session.get("test").asks[i.get()];
 	},
 	isLast : function(){
-		return isLast.get();
+		return false; //isLast.get();
 	}
 });
 
@@ -68,7 +57,7 @@ Template.testing.events({
 		i.set(i.get() + 1); 
 	},
 	'click #answer' : function(e, t){
-		/*
+		
 		var askNumber = null;
 		
 		if(Session.get("test").type.split("-")[0] == "line"){
@@ -76,27 +65,10 @@ Template.testing.events({
 		}
 		else{
 			askNumber = "Чему-то, что будет зависить от ответа на предыдущий вопрос";
-
 			//Проверяем на наличие свойства isLast;
 		}
-
-		Meteor.call('insertAnswer', FlowRouter.getParam("_id"), idPass, i.get(), Number($("input[name='isTrue']:checked")[0].value), askNumber);
 		
-		if(isLast.get()){
-			
-			status.set("result");
-			Meteor.call('finishTest', FlowRouter.getParam("_id"), idPass);
-			i.set(0);
-			isLast.set(false);
-			return 0;
-
-		}
-
-		i.set(askNumber);
-
-		if(i.get() + 1 == Session.get("test").asks.length){
-			isLast.set(true);
-		}*/
-
+		Meteor.call("addAnswer", idStat, { num : i.get(), value : Number($("input[name='isTrue']:checked")[0].value) });
+		
 	}
 });
