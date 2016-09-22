@@ -1,0 +1,8 @@
+<template name="categories">
+	<a href="/categories">categories</a><br>
+	<a href="/addCategoria">Я считаю, что есть нехватка категории</a>
+	{{#each cat in categories}}
+		<div>{{cat.title}} <a href="/categories/{{cat.name}}">{{cat.name}}</a></div>
+	{{/each}}
+</template>
+

@@ -1,0 +1,56 @@
+<template name="test">
+	<h1>Тест "{{test.title}}"</h1>
+	{{#if isInfo }}
+		{{ > info test = test }}
+	{{/if}}
+	{{#if isTest }}
+		{{ > testing type = test.type }}
+	{{/if}}
+	{{#if isResult }}
+		{{ > result type = test.type }}
+	{{/if}}
+</template>
+
+<template name="info">
+	<p>{{ test.description }}</p>
+	{{#if test.img }}
+		<p>
+			<img src="/cfs/files/images/{{ test.img }}">
+		</p>
+	{{/if}}
+	<p>
+		<button id="start">Начать тест</button>
+	</p>
+</template>
+
+<template name="testing">
+	{{ isLast }}
+	<p>{{currentAsk.text}}</p>
+	<p>
+		{{#each currentAsk.img }}
+			<img src="/cfs/files/images/{{ this }}">
+		{{/each}}
+	</p>
+	<ul>
+		{{#each currentAsk.answers}}
+			<li>
+				<input type="radio" name="isTrue" value="{{@index}}">
+				<p>{{this.text}}</p>
+				<div class="imagesList">
+					{{#each img in this.images }}
+						<img src="/cfs/files/images/{{ img }}">
+					{{/each}}
+				</div>
+			</li>
+		{{/each}}
+	</ul>
+	<p>
+		<button id="skip">Пропустить</button>
+		<button id="answer">Ответить</button>
+		<button id="askList">Вопросы</button>
+	</p>
+</template>
+
+<template name="result">
+	<p>Тут результат)</p>
+</template>

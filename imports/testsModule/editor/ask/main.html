@@ -1,0 +1,58 @@
+<template name="askBlock">
+	<div id="askOption">
+		{{#if _ask}}
+			<button id="close">Закрыть</button>
+		{{/if}}
+		<form id="askForm">
+			{{#if _ask}}
+				<p>
+					ID : {{_ask._id}}
+				</p>
+			{{/if}}
+			<p>
+				Текст вопроса:
+			</p>
+			<p>
+				<textarea name="askText">{{ _ask.text }}</textarea>
+			</p>
+			<p>
+				Изображения: <input type="file" name="images" multiple accept="image/*">
+			</p>
+			<select name="typeAnswer">
+				<option value="oneTrue" selected>Один правильный</option>
+			</select>
+			<div>
+				{{#if answerOneTrue }}
+					<div id="answers">
+					{{#each answers}}
+						{{ > answer data = this id = @index }}
+					{{/each}}
+					</div>
+					<button id="addAnswer" type="button">Добавить</button>
+				{{/if}}
+			</div>
+			<p>
+				<button type="submit">Ок</button>
+			</p>
+		</form>
+	</div>
+</template>
+
+<template name="answer">
+	<div>
+		<p>
+			Текст: <input type='text' name="text-{{id}}" value="{{data.text}}">
+		</p>
+		<p>
+			<ul>
+				{{#each data.images}}
+					<li><a href="/cfs/files/images/{{ this }}">{{ @index }}</a></li>
+				{{/each}}
+			</ul>
+			Картинки: <input type="file" name="imageAnswer-{{id}}" multiple accept="image/*">
+		</p>
+		<p>
+			Это правильный ответ: <input type="radio" name="trueVar" value="isTrue-{{id}}" checked="{{#if data.isTrue}}checked{{/if}}">
+		</p>
+	</div>
+</template>

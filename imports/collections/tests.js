@@ -1,0 +1,1 @@
+export var Tests = new Mongo.Collection("tests");

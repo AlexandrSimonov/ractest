@@ -1,0 +1,51 @@
+<template name="admin">
+	{{#if admin}}
+		{{> adminka }}
+	{{else}}
+		{{> auth }}
+	{{/if}}
+</template>
+
+<template name="auth">
+	<form id="auth">
+		password : <input type="password" name="pass">
+		<button type="submit">Админ</button>
+	</form>
+</template>
+
+<template name="adminka">
+	<h1>Тип админка</h1>
+	<h2>Запросы</h2>
+	<table class="table">
+		<thead>
+			<tr>
+				<td>Тип</td>
+				<td>Описание</td>
+				<td>Пользователь</td>
+				<td>Статус</td>
+			</tr>
+		</thead>
+		<tbody>
+			{{#each q in query}}
+				{{> _query q = q }}
+			{{/each}}
+		</tbody>
+	</table>
+</template>
+
+<template name="_query">
+	{{#if isShow q.status}}
+		<tr>
+			<td>{{ type q.label }}</td>
+			<td>{{ q.desc }}</td>
+			<td><button class="chatButton">Чат</button></td>
+			<td>
+				<select class="status">
+					{{#each s in status}}
+						<option selected="{{isSelected s.name q.status}}" value="{{s.name}}">{{s.title}}</option>
+					{{/each}}
+				</select>
+			</td>
+		</tr>
+	{{/if}}
+</template>

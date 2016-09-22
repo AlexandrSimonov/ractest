@@ -1,0 +1,21 @@
+<template name="profile">
+	{{#if userReady}}
+		{{#if user}}
+			<h1>Профиль</h1>
+			<h2>Уведомления</h2>
+			<ul>
+				{{#each n in notifications }}
+					{{{n}}}<button name="{{@index}}" id="del">Удалить</button>
+				{{/each}}
+			</ul>
+
+			<h2>Инфо</h2>
+			{{#if email}}
+			<p>Чтобы иметь возможность создавать тесты нужно подтвердить e-mail адрес</p>
+			<button id="emailVer" name="{{email}}">Подтвердить {{email}}</button>
+			{{/if}}
+		{{/if}}
+	{{else}}
+		load...
+	{{/if}}
+</template>

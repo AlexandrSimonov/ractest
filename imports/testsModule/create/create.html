@@ -1,0 +1,42 @@
+<template name="createTest">
+	<h1>Создание теста</h1>
+	<form id="test">
+		<h3>Информация об тесте</h3>
+			<p>Название: <input type="text" name="title"></p>
+			<p>Описание теста: </p><p><textarea name="desc"></textarea></p>
+			Изображение : <input type="file" name="img"> (Желательно изображение 1000*600 или в пропорции 5:3, иначе могут быть проблемки)
+		<h3>Доступность</h3>
+			<p>Если вы установите доступ по ссылке, то ваш тест не будет отображаться в категориях</p>
+			Всем: <input type="radio" name="access" class="access" value="all" checked>
+			По ссылке: <input type="radio" name="access" class="access" value="link">
+		<h3>Время на прохождение теста</h3>
+			Не ограничено: <input type="radio" name="time" class="time" value="notLimited" checked>
+			Ограничено: <input type="radio" name="time" class="time" value="limited">
+			{{#if isLimited}}
+				Время: 
+				<ul>
+					<li>Часы<input type="number" name="hours" value="0" min="0" max="40"></li>
+					<li>Минуты<input type="number" name="minutes"  value="0" min="0" max="59"></li>
+					<li>Секунды<input type="number" name="seconds" value="0" min="0" max="59"></li>
+				</ul>
+			{{/if}}
+			{{#if access}}
+				<h3>Категория</h3>
+				Выберите категорию: 
+				<select name="categoria">
+						{{#each cat in categories}}
+							<option value="{{cat._id}}">{{cat.title}}</option>
+						{{/each}}
+				</select>
+			{{/if}}
+		<h3>Тип теста</h3>
+			<p>Линейный - набор балов: <input type="radio" name="type" value="line-point" checked></p>
+			<!--<p>Линейный - сбор инфы: <input type="radio" name="type" value="line-info"></p>
+			<p>Линейный - несколько исходов: <input type="radio" name="type" value="line-some"></p>
+			<p>Нелинейный - сбор инфы: <input type="radio" name="type" value="notLine-info"></p>
+			<p>Нелинейный - несколько исходов: <input type="radio" name="type" value="notLine-some"></p>-->
+		<p>
+			<button type="submit">Создать</button>
+		</p>
+	</form>
+</template>

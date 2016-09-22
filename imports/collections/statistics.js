@@ -1,0 +1,1 @@
+export var Statistics = new Mongo.Collection("statistics");

@@ -1,0 +1,15 @@
+<template name="chat">
+	<h2>Чат</h2>
+	{{#each message in messages}}
+		{{#if writer message.writer}}
+			<p>Вы написали:</p>
+		{{else}}
+			<p>Вам написали:</p>	
+		{{/if}}
+		<p>{{message.message}}</p>
+	{{/each}}
+	<form id="newMessage">
+		<textarea name="text"></textarea><br>
+		<button type="submit">Отправить</button>
+	</form>
+</template>

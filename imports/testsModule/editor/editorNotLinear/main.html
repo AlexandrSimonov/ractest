@@ -1,0 +1,17 @@
+<template name="editorNotLinear">
+	<div id="editor">
+		<div id="editor-menu">
+			<button id="addAsk">Добавить вопрос</button>
+		</div>
+		<div id="container">
+		</div>
+		<div id="container-fluid">
+			<div class="block"><div id="startTest" class="circle startCircle"></div>Начало</div>
+			<div class="block endBlock"><div id="endTest" class="circle endCircle"></div>Конец</div>
+		</div>
+		{{#if addOption}}
+			{{>askBlock}}
+		{{/if}}
+	</div>
+</template>
+

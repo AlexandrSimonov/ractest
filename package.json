@@ -1,0 +1,15 @@
+{
+  "name": "ractest.com",
+  "private": true,
+  "scripts": {
+    "start": "meteor run"
+  },
+  "dependencies": {
+    "bcrypt": "^0.8.7",
+    "canvas": "^1.4.0",
+    "jsdom": "^9.4.2",
+    "konva": "^1.1.0",
+    "meteor-node-stubs": "^0.2.3",
+    "node-gyp": "^3.4.0"
+  }
+}

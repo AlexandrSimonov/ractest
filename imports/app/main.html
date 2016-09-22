@@ -1,0 +1,11 @@
+<template name="app">
+	<p>Меню</p>
+	{{#if currentUser }}
+		<a href="/profile">Профиль</a>
+		<a href="/exit">Выход</a>
+	{{else}}
+		<a href="/auth">Вход</a>
+		<a href="/register">Регистрация</a>
+	{{/if}}
+  {{ > Template.dynamic template = layout }}
+</template>

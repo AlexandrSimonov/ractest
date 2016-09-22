@@ -1,0 +1,16 @@
+<template name="editorLinear">
+	<h1>Редактор теста</h1>
+	<div id="container-linear">
+		{{#each asks}}
+			{{ > ask d = this}}
+		{{/each}}
+	</div>
+	<button id="addAsk">Новый вопрос</button>
+	{{#if addOption}}
+		{{ > askBlock _ask = _ask }}
+	{{/if}}
+</template>
+
+<template name="ask">
+	<div class="ask-linear" id="ask-{{d._id}}" draggable="true">{{ textMod d.text}}</div>
+</template>
