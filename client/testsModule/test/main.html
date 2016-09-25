@@ -2,7 +2,7 @@
 	<h1>Тест "{{test.title}}"</h1>
 
 	{{#if window}}
-		Окно 
+		{{> windowContinue }}
 	{{/if}}
 	{{#if isInfo }}
 		{{ > info test = test }}
@@ -56,5 +56,13 @@
 
 <template name="result">
 	<p>Тут результат)</p>
+	<p><button id="reset">Сначала</button></p>
 </template>
 
+<template name="windowContinue">
+	<div>
+		<p>Вы уже начинали проходить этот тест</p>
+		<button id="continue">Продолжить</button>
+		<button id="notContinue">Начать сначала</button>
+	</div>
+</template>

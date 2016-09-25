@@ -2,7 +2,6 @@ import { Tests } from '../../imports/collections/tests.js';
 
 Meteor.methods({
 	'addTest' : function(test){
-		test.statistic = [];
 		return Tests.insert(test);
 	},
 	'newAsk' : function(idTest, ask){

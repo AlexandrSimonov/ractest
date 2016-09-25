@@ -7,7 +7,7 @@ Meteor.methods({
 		var stat = Statistics.findOne({ idTest : idTest, idUser : Meteor.userId(), finish : false });
 		
 		if(stat){
-			return { id : stat._id, isNew : false}
+			return { id : stat._id, isNew : false, answers : stat.answers}
 		}
 
 		//finish флаг указывающий на то закончено ли прохождение
@@ -21,5 +21,13 @@ Meteor.methods({
 	},
 	'finishStat' : function(idStat){
 		Statistics.update(idStat, {$set : { finish : true }});
+	},
+	'finishAndNew' : function(idTest, idStat){
+		Statistics.update(idStat, {$set : { finish : true, isAll : false }});
+
+		var id = Statistics.insert({ idTest : idTest, idUser : Meteor.userId(), answers : [], finish : false });
+		isNew  = true;
+
+		return {id : id, isNew : true};
 	}
 });

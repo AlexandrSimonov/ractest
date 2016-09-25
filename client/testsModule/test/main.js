@@ -3,7 +3,7 @@ import { Tests } from '../../../imports/collections/tests.js';
 var status = new ReactiveVar("info");
 var i = new ReactiveVar(0);
 var isLast = new ReactiveVar(false);//Модифицировать, пока что идей не очень много в 4:09...
-var idStat = "";
+var stat = "";
 
 Template.test.onCreated(function(){
 	status.set("info");
@@ -11,20 +11,13 @@ Template.test.onCreated(function(){
 	Session.set("test", Tests.findOne(FlowRouter.getParam("_id")));
 	
 	Meteor.call("checkStat", Session.get("test")._id, function(err, res){
-		idStat = res.id;
-		/*
-		if(!res.isNew){
-			if(confirm('Вы уже начинали проходить этот тест, желаете продолжить?')){
-			    i.set(res.i);
-			}
-			else{
-				//Нужно 
-			}
-		}	*/
+		
+		stat = res;
+
 		if(!res.isNew){
 			Session.set("window", true);
 		}
-		/*Сделать модальное окно для проверки, если тест НЕ новый то предлогать продолжить прошлое прохождение*/
+		
 	});
 	
 });
@@ -53,10 +46,6 @@ Template.info.events({
 	}
 });
 
-Template.testing.onCreated(function(){
-
-});
-
 Template.testing.helpers({
 	currentAsk : function(){
 		return Session.get("test").asks[i.get()];
@@ -68,12 +57,12 @@ Template.testing.events({
 		i.set(i.get() + 1); 
 	},
 	'click #answer' : function(e, t){
-
-		Meteor.call("addAnswer", idStat, { num : i.get(), value : Number($("input[name='isTrue']:checked")[0].value) });
+		Meteor.call("addAnswer", stat.id, { num : i.get(), value : Number($("input[name='isTrue']:checked")[0].value) });
 
 		if(Session.get("test").type.split("-")[0] == "line"){
 			if(i.get() + 1 == Session.get("test").asks.length){ 
-				Meteor.call("finishStat", idStat);
+				status.set("result");
+				Meteor.call("finishStat", stat.id);
 			}
 			else{
 				i.set(i.get() + 1);
@@ -84,5 +73,51 @@ Template.testing.events({
 			//Проверяем на наличие свойства isLast;
 		}
 
+	}
+});
+
+Template.result.events({
+	'click #reset' : function(){
+		Meteor.call("checkStat", Session.get("test")._id, function(err, res){
+		
+			stat = res;
+			i.set(0);
+			status.set("test");
+		});
+	}
+});
+
+Template.windowContinue.events({
+	'click #continue' : function(){
+		
+		if(Session.get("test").type.split("-")[0] == "line"){
+			if(stat.answers.length > 0){
+				if(stat.answers.length == Session.get("test").asks.length){
+					//Значит тест окончен
+					console.log("Ошибка");
+				}
+				else{
+					i.set(stat.answers.length);
+				}
+			}
+			else{
+				i.set(0);
+			}
+		}
+
+		Session.set("window", false);
+		status.set("test");
+	},
+	'click #notContinue' : function(){
+		
+		Meteor.call("finishAndNew", Session.get("test")._id, stat.id, function(err, res){
+		
+			stat = res;
+			i.set(0);
+
+		}); 
+
+		Session.set("window", false);
+		status.set("test");
 	}
 });
