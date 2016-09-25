@@ -1,3 +1,5 @@
+import { Query } from '../../imports/collections/query.js';
+
 Meteor.methods({
 	'addQuery' : function(label, desc, user){
 		Query.insert({label : label, desc : desc, user : user, status : "new" });

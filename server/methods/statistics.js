@@ -29,5 +29,8 @@ Meteor.methods({
 		isNew  = true;
 
 		return {id : id, isNew : true};
+	},
+	'skipAnswer' : function(idStat, num){
+		Statistics.update(idStat, {$push : {answers : { num : num, skip : true}}});
 	}
 });

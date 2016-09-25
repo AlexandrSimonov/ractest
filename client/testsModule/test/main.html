@@ -48,7 +48,10 @@
 		{{/each}}
 	</ul>
 	<p>
-		<button id="skip">Пропустить</button>
+		{{#if isLine}}
+			<button id="skip">Пропустить</button>
+		{{/if}}
+		<button id="over">Закончить</button>
 		<button id="answer">Ответить</button>
 		<button id="askList">Вопросы</button>
 	</p>
@@ -65,4 +68,8 @@
 		<button id="continue">Продолжить</button>
 		<button id="notContinue">Начать сначала</button>
 	</div>
+</template>
+
+<template name="window">
+	
 </template>

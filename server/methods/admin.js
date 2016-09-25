@@ -1,3 +1,9 @@
+/*
+	Подправить вход в админку
+	Сделать на основе совпадения с другой таблицей
+
+*/
+
 const _pass = "monibuvycextredfvhgtynbjhg823ienvytlqcrkemvjsjryqkfbsyr";
 
 Meteor.methods({

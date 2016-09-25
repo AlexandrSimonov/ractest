@@ -3,7 +3,7 @@ import { Tests } from '../../../imports/collections/tests.js';
 var status = new ReactiveVar("info");
 var i = new ReactiveVar(0);
 var stat = "";
-
+var isLast = ReactiveVar(false);
 Template.test.onCreated(function(){
 	status.set("info");
 	
@@ -48,12 +48,21 @@ Template.info.events({
 Template.testing.helpers({
 	currentAsk : function(){
 		return Session.get("test").asks[i.get()];
+	},
+	isLine : function(){
+		return Session.get("test").type.split("-")[0] == "line";
+	},
+	isLast : function(){
+		return isLast.get();
 	}
 });
 
 Template.testing.events({
-	'click #next' : function(e, t){
-		i.set(i.get() + 1); 
+	'click #skip' : function(e, t){
+		if(Session.get("test").type.split("-")[0] == "line"){
+			Meteor.call("skipAnswer", stat.id, i.get());
+			i.set(i.get() + 1); 
+		}
 	},
 	'click #answer' : function(e, t){
 		Meteor.call("addAnswer", stat.id, { num : i.get(), value : Number($("input[name='isTrue']:checked")[0].value) });
@@ -69,9 +78,10 @@ Template.testing.events({
 		}
 		else{
 			askNumber = "Чему-то, что будет зависить от ответа на предыдущий вопрос";
-			//Проверяем на наличие свойства isLast;
 		}
-
+	},
+	'click #over' : function(){
+		console.log("Закончить тест");
 	}
 });
 
@@ -120,3 +130,27 @@ Template.windowContinue.events({
 		status.set("test");
 	}
 });
+
+
+Tracker.autorun(function(){
+	if(i.get() + 1 == Session.get("test").asks.length){
+		isLast.set(true);
+
+		/*Нужно спросить, желает ли человек ответить на вопросы, которые он пропустил*/
+	}
+});
+/*
+*
+*
+*
+*
+*	Описать поведение для пропусков ответов
+*	Ответ в не линейном тесте нельзя пропустить +
+*	Если дошли до последнего вопроса, то отметить флаг, что уже пошло всё по второму кругу
+*	Добавить возможность посмотреть все вопросы(переход к вопросам)
+*
+*
+*
+*
+*
+*/
