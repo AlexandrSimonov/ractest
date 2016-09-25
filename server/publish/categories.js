@@ -17,9 +17,12 @@ Meteor.publish("subCategories", function(name){
 	var temp = Categories.findOne({ isPublic : true, name : name }, { fields : {
 		subCategories : 1
 	}});
-	if(temp.subCategories.length > 0){
+	
+	if(temp && temp.subCategories.length > 0){
 		return Categories.find({ isPublic : true, _id : { $in : temp.subCategories } }, { fields: {
 			subscribers : 0
 		}});
 	}
+	//Вернуть ошибку
+	//throw new Error("Don't find categorie");
 });

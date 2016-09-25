@@ -2,7 +2,6 @@ import { Tests } from '../../../imports/collections/tests.js';
 
 var status = new ReactiveVar("info");
 var i = new ReactiveVar(0);
-var isLast = new ReactiveVar(false);//Модифицировать, пока что идей не очень много в 4:09...
 var stat = "";
 
 Template.test.onCreated(function(){
