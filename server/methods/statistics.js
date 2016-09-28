@@ -14,22 +14,22 @@ Meteor.methods({
 			answers.push({});
 		}
 
-		var id = Statistics.insert({ idTest : idTest, idUser : Meteor.userId(), answers : answers, finish : false });
+		var id = Statistics.insert({ idTest : idTest, idUser : Meteor.userId(), answers : answers, finish : {end : false} });
 
 		return id;
 	
 	},
 	'checkStat' : function(idTest){
 		
-		var stat = Statistics.findOne({ idTest : idTest, idUser : Meteor.userId(), finish : false });
+		var stat = Statistics.findOne({ idTest : idTest, idUser : Meteor.userId(),  finish : { end : false} });
 		
 		if(stat){
-			return { id : stat._id, isNew : false, answers : stat.answers}
+			return { id : stat._id, isNew : false };
 		}
 
 		var id = Meteor.call("newStat", idTest);
 
-		return { id : id, isNew : true, answers : [] };
+		return { id : id, isNew : true };
 		//finish флаг указывающий на то закончено ли прохождение
 		
 	},
@@ -37,14 +37,14 @@ Meteor.methods({
 		Statistics.update(idStat, {$set : { ["answers." + num + ".value"] : value }});
 	},
 	'finishStat' : function(idStat){
-		Statistics.update(idStat, {$set : { finish : true }});
+		Statistics.update(idStat, {$set : { finish : { end : true } }});
 	},
 	'finishAndNew' : function(idTest, idStat){
-		Statistics.update(idStat, {$set : { finish : true, isAll : false }});
+		Statistics.update(idStat, {$set : { finish : { end : true, isAll : false }}});
 
 		var id = Meteor.call("newStat", idTest);
 
-		return { id : id, isNew : true, answers : [] };
+		return { id : id };
 		 	
 	}
 });

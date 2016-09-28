@@ -4,22 +4,31 @@ import { Statistics } from '../../../imports/collections/statistics.js';
 var status = new ReactiveVar("info");
 var i = new ReactiveVar(0);
 var test = new ReactiveVar();
-
-
+var continueTest = new ReactiveVar(false);
 function end(){
 	status.set("result");
+	Meteor.call("finishStat", idStat.get());
 }
 
 Template.test.onCreated(function(){
 	status.set("info");
 	test.set(Tests.findOne(FlowRouter.getParam("_id")));
-	
+
+	Meteor.call("checkStat", test.get()._id, function(err, res){
+		
+		Meteor.subscribe("statistic", res.id);
+
+		idStat.set(res.id);
+		
+		if(!res.isNew){
+			continueTest.set(true);
+		}
+
+	});
 });
 
 Template.test.helpers({
-	window : function(){
-		return Session.get("window");
-	},
+	
 	test : function(){
 		return test.get();
 	},
@@ -40,12 +49,20 @@ Template.info.events({
 	}
 });
 
+Template.info.helpers({
+	_continueTest : function(){
+		return continueTest.get();
+	}
+});
+
 var skipMode = new ReactiveVar(false); 
 
-/*Если skipMode = true*/
 /*
+	Если skipMode = true
+
 	Значит человек дошел до последнего теста и нужно проверять на пропущенные 
 */
+
 Tracker.autorun(function(){
 	if(test.get() && idStat.get() && skipMode.get()){
 
@@ -57,7 +74,6 @@ Tracker.autorun(function(){
 			
 			for(var j = 0; j < stat.answers.length; j++){
 				if(!("value" in stat.answers[j])){
-					console.log(j);
 					i.set(j);
 					fl = false;
 					break;
@@ -80,19 +96,6 @@ Tracker.autorun(function(){
 var idStat = new ReactiveVar("");
 
 Template.testing.onCreated(function(){
-	
-	Meteor.call("checkStat", test.get()._id, function(err, res){
-		
-		Meteor.subscribe("statistic", res.id);
-
-		idStat.set(res.id);
-		/*
-		if(!res.isNew){
-			Session.set("window", true);
-		}*/
-
-	});
-
 	this.showAskList = new ReactiveVar(false);
 });
 
@@ -107,9 +110,6 @@ Template.testing.helpers({
 	showAskList : function(){
 		return Template.instance().showAskList.get();
 	},
-	skipMode : function(){
-		return skipMode.get();
-	}
 });
 
 var answers = new ReactiveVar([]);
@@ -139,39 +139,36 @@ Template.testing.events({
 	}
 });
 
-Template.result.events({
-	'click #reset' : function(){
-		/*Meteor.call("checkStat", test.get()._id, function(err, res){
-		
-			stat = res;
-			i.set(0);
-			status.set("test");
-		});*/
-	}
-});
-
-Template.windowContinue.events({
+Template.continueTest.events({
 	'click #continue' : function(){
 		
 		if(test.get().type.split("-")[0] == "line"){
-			//i.set(stat.get().answers.length);
-		}
+			var stat = Statistics.findOne(idStat.get());	
 
-		Session.set("window", false);
+			for(var j = 0; j < stat.answers.length; j++){
+				if("value" in stat.answers[j]){
+					i.set(j);
+					skipMode.set(true);
+					break;
+				}
+			}
+		}
+		
 		status.set("test");
+
 	},
 	'click #notContinue' : function(){
+
+		Meteor.call("finishAndNew", test.get()._id, idStat.get(), function(err, res){
 		
-		Meteor.call("finishAndNew", test.get()._id, stat.id, function(err, res){
-		
-			Meteor.subscribe("statistic", res.id, function(){
-				stat.set(Statistics.find(res.id));
-			});
+			Meteor.subscribe("statistic", res.id);
+
+			idStat.set(res.id);
+
 			i.set(0);
 
 		}); 
 
-		Session.set("window", false);
 		status.set("test");
 	}
 });
@@ -198,19 +195,3 @@ Template.askList.events({
 		i.set(Number(e.target.name.split("-")[1]));
 	}
 });
-
-/*
-*
-*
-*
-*
-*	Описать поведение для пропусков ответов
-*	Ответ в не линейном тесте нельзя пропустить +
-*	Если дошли до последнего вопроса, то отметить флаг, что уже пошло всё по второму кругу
-*	Добавить возможность посмотреть все вопросы(переход к вопросам)
-*
-*
-*
-*
-*
-*/

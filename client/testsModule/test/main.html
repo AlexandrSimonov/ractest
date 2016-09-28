@@ -1,9 +1,6 @@
 <template name="test">
 	<h1>Тест "{{test.title}}"</h1>
 
-	{{#if window}}
-		{{> windowContinue }}
-	{{/if}}
 	{{#if isInfo }}
 		{{ > info test = test }}
 	{{/if}}
@@ -22,15 +19,16 @@
 			<img src="/cfs/files/images/{{ test.img }}">
 		</p>
 	{{/if}}
-	<p>
-		<button id="start">Начать тест</button>
-	</p>
+	{{#if _continueTest}}
+		{{> continueTest }}
+	{{else}}
+		<p>
+			<button id="start">Начать тест</button>
+		</p>
+	{{/if}}
 </template>
 
 <template name="testing">
-	{{#if skipMode}}
-		<p>Ответьте на пропущенные вопросы или закончите тест</p>
-	{{/if}}
 	<p>{{currentAsk.text}}</p>
 	<p>
 		{{#each currentAsk.img }}
@@ -68,19 +66,14 @@
 
 <template name="result">
 	<p>Тут результат)</p>
-	<p><button id="reset">Сначала</button></p>
 </template>
 
-<template name="windowContinue">
+<template name="continueTest">
 	<div>
 		<p>Вы уже начинали проходить этот тест</p>
 		<button id="continue">Продолжить</button>
 		<button id="notContinue">Начать сначала</button>
 	</div>
-</template>
-
-<template name="window">
-	
 </template>
 
 <template name="askList">
