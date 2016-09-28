@@ -1,7 +1,24 @@
 import { Statistics } from '../../imports/collections/statistics.js';
+import { Tests } from '../../imports/collections/tests.js';
+
+/*
+*/
 
 Meteor.methods({
-	//Проверка, закончены ли все прохождения теста. Создаем новое прохождение
+	'newStat' : function(idTest){
+		var test = Tests.findOne(idTest);
+		
+		var answers = [];
+
+		for(var i = 0; i < test.asks.length; i++){
+			answers.push({});
+		}
+
+		var id = Statistics.insert({ idTest : idTest, idUser : Meteor.userId(), answers : answers, finish : false });
+
+		return id;
+	
+	},
 	'checkStat' : function(idTest){
 		
 		var stat = Statistics.findOne({ idTest : idTest, idUser : Meteor.userId(), finish : false });
@@ -10,14 +27,14 @@ Meteor.methods({
 			return { id : stat._id, isNew : false, answers : stat.answers}
 		}
 
-		//finish флаг указывающий на то закончено ли прохождение
-		var id = Statistics.insert({ idTest : idTest, idUser : Meteor.userId(), answers : [], finish : false });
-		isNew  = true;
+		var id = Meteor.call("newStat", idTest);
 
-		return {id : id, isNew : true};
+		return { id : id, isNew : true, answers : [] };
+		//finish флаг указывающий на то закончено ли прохождение
+		
 	},
-	'addAnswer' : function(idStat, data){
-		Statistics.update(idStat, {$push : {answers : data}});
+	'addAnswer' : function(idStat, num, value){
+		Statistics.update(idStat, {$set : { ["answers." + num + ".value"] : value }});
 	},
 	'finishStat' : function(idStat){
 		Statistics.update(idStat, {$set : { finish : true }});
@@ -25,12 +42,9 @@ Meteor.methods({
 	'finishAndNew' : function(idTest, idStat){
 		Statistics.update(idStat, {$set : { finish : true, isAll : false }});
 
-		var id = Statistics.insert({ idTest : idTest, idUser : Meteor.userId(), answers : [], finish : false });
-		isNew  = true;
+		var id = Meteor.call("newStat", idTest);
 
-		return {id : id, isNew : true};
-	},
-	'skipAnswer' : function(idStat, num){
-		Statistics.update(idStat, {$push : {answers : { num : num, skip : true}}});
+		return { id : id, isNew : true, answers : [] };
+		 	
 	}
 });

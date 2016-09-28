@@ -121,3 +121,11 @@ body, html{
 .imagesList img{
 	height: 200px;
 }
+
+.skip-button{
+	background: red;
+}
+
+.answer-button{
+	background: green;
+}
